@@ -8,6 +8,34 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
+#ADD
+import math #gives me access to math.atan2, math.sin, math.pi which Pure Pursuit needs to calculate angles
+from dataclasses import field
+
+
+#ADD
+def normalize_angle(angle: float) -> float:
+    '''
+    Angles in Python can exceed 360°.
+    This function always returns them to between -180° and +180° (in radians).
+    Pure Pursuit needs this to avoid running in the wrong direction.
+    '''
+    while angle > math.pi:
+        angle -= 2.0 * math.pi
+    while angle < -math.pi:
+        angle += 2.0 * math.pi
+    return angle
+
+#ADD
+def distance(p1, p2) -> float:
+    '''
+     Calculate the distance between two points (x1,y1) and (x2,y2).
+     This is the Pythagorean theorem: square root of (dx² + dy²).
+     We use it to determine if we are close to a waypoint.
+    '''
+    return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
+
+
 
 def pretty_print_map_summary(map_payload: Dict[str, Any]) -> None:
     extent = map_payload.get("extent") or [None, None, None, None]
