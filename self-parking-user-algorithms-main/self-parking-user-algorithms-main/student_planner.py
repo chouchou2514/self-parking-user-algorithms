@@ -35,7 +35,32 @@ def distance(p1, p2) -> float:
     '''
     return math.sqrt((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2)
 
+#ADD
+'''
+Class Control to control the movment of the car'''
+class PurePursuitController:
 
+    def __init__(self, look_ahead: float = 2.5, k_v: float=0.3):
+        self.look_ahead = look_ahead
+        self.k_v = k_v
+
+    def compute_steer(self, x, y, yaw, waypoints, v, wheelbase, max_steer):
+
+        Ld = max(self.look_ahead, self.k_v + abs(v))
+
+        target = waypoints[-1][:2]
+        for wp in waypoints:
+            if distance((x, y), wp[1])) >= Ld:
+                target = (wp[0], wp[1])
+                break
+
+        dx = target[0] - x
+        dy = target[1] - y
+        alpha = normalize_angle(math.atan2(dy, dx) - yaw)
+
+        steer = math.atan2(2.0 * wheelbase * math.sin(alpha), Ld)
+        steer = max(-max_steer, min(max_steer, steer))
+        return steer
 
 def pretty_print_map_summary(map_payload: Dict[str, Any]) -> None:
     extent = map_payload.get("extent") or [None, None, None, None]
@@ -64,6 +89,29 @@ class PlannerSkeleton:
     def __post_init__(self) -> None:
         if self.waypoints is None:
             self.waypoints = []
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def set_map(self, map_payload: Dict[str, Any]) -> None:
         """시뮬레이터에서 전송한 정적 맵 데이터를 보관합니다."""
